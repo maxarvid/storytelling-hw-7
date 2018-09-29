@@ -79,11 +79,10 @@ function ready(datapoints) {
     .attr('class', 'price-data')
     .each(function(d) {
       var g = d3.select(this)
-      console.log(d)
 
       var datapoints = d.values
-      console.log(datapoints)
 
+      // Draw your lines
       g.selectAll('.price-line')
         .data(datapoints)
         .enter()
@@ -93,40 +92,35 @@ function ready(datapoints) {
         .attr('fill', 'none')
         .attr('stroke', d => colorScale(d.region))
         .attr('stroke-width', 2)
+
+      let maxDate = d3.max(datapoints, d => d.datetime)
+      let finalPrice = datapoints[0].price
+
+      g.selectAll('.line-circle')
+        .data(datapoints)
+        .enter()
+        .append('circle')
+        .attr('class', 'line-circle')
+        .attr('cx', xPositionScale(maxDate))
+        .attr('cy', d => yPositionScale(finalPrice))
+        .attr('r', 5)
+        .attr('fill', d => colorScale(d.region))
+
+      g.selectAll('.region-text')
+        .data(datapoints)
+        .enter()
+        .append('text')
+        .attr('class', 'region-text')
+        .text(d => d.region)
+        .attr('x', xPositionScale(maxDate))
+        .attr('y', d => yPositionScale(finalPrice))
+        .attr('font-size', 10)
+        .attr('alignment-baseline', 'middle')
+        .attr('dx', 8)
     })
 
-  // Draw your lines
-  svg
-    .selectAll('path')
-    .data(nested)
-    .enter()
-    .append('path')
-    .attr('fill', 'none')
-    .attr('d', d => line(d.values[0]))
-    .attr('stroke-width', 2)
-
-  let maxDate = d3.max(datapoints, d => d.datetime)
-
-  svg
-    .selectAll('circle')
-    .data(nested)
-    .enter()
-    .append('circle')
-    .attr('cx', xPositionScale(maxDate))
-    .attr('cy', d => yPositionScale(d.values[0].price))
-    .attr('r', 5)
-    .attr('fill', d => colorScale(d.key))
-
   // Add your text on the right-hand side
-  svg
-    .append('text')
-    .data(nested)
-    .text(d => d.key)
-    .attr('x', xPositionScale(maxDate))
-    .attr('y', d => yPositionScale(d.values[0].price))
-    .attr('font-size', 10)
-    .attr('alignment-baseline', 'middle')
-    .attr('dx', 8)
+
 
   // Add your title
   svg
