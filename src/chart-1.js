@@ -25,7 +25,7 @@ let yPositionScale = d3.scaleLinear().range([height, 0])
 var colorScale = d3
   .scaleOrdinal()
   .range([
-    '#a6cee3',
+    '#90a0c7',
     '#1f78b4',
     '#b2df8a',
     '#33a02c',
@@ -93,6 +93,7 @@ function ready(datapoints) {
         .attr('stroke', d => colorScale(d.region))
         .attr('stroke-width', 2)
 
+      // Add the circles
       let maxDate = d3.max(datapoints, d => d.datetime)
       let finalPrice = datapoints[0].price
 
@@ -106,6 +107,7 @@ function ready(datapoints) {
         .attr('r', 5)
         .attr('fill', d => colorScale(d.region))
 
+      // Add your text on the right-hand side
       g.selectAll('.region-text')
         .data(datapoints)
         .enter()
@@ -114,13 +116,10 @@ function ready(datapoints) {
         .text(d => d.region)
         .attr('x', xPositionScale(maxDate))
         .attr('y', d => yPositionScale(finalPrice))
-        .attr('font-size', 10)
+        .attr('font-size', 12)
         .attr('alignment-baseline', 'middle')
         .attr('dx', 8)
     })
-
-  // Add your text on the right-hand side
-
 
   // Add your title
   svg
@@ -130,6 +129,7 @@ function ready(datapoints) {
     .text('U.S. housing prices fall in winter')
     .attr('font-size', 24)
     .attr('text-anchor', 'middle')
+
   // Add the shaded rectangle
   svg
     .append('rect')
