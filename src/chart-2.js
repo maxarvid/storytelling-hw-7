@@ -1,10 +1,10 @@
 import * as d3 from 'd3'
 
 // Set up margin/height/width
-var margin = { top: 30, left: 30, right: 30, bottom: 30 }
+var margin = { top: 30, left: 30, right: 0, bottom: 30 }
 
-var height = 120 - margin.top - margin.bottom
-var width = 100 - margin.left - margin.right
+var height = 130 - margin.top - margin.bottom
+var width = 70 - margin.left - margin.right
 
 // I'll give you the container
 var container = d3.select('#chart-2')
@@ -23,7 +23,6 @@ var yPositionScale = d3
 var area = d3
   .area()
   .x(d => xPositionScale(d.Age))
-  .y1(d => yPositionScale(d.ASFR_jp))
   .y0(height)
 
 // Read in your data
@@ -55,12 +54,25 @@ function ready(datapoints) {
     .each(function(d) {
       var svg = d3.select(this)
 
+      // Add Japan area
+      area.y1(d => yPositionScale(d.ASFR_jp))
       svg
         .append('path')
         .datum(d.values)
         .attr('d', area)
-        .attr('fill', '#f08885')
+        .attr('fill', '#eb3223')
+        .attr('opacity', 0.6)
 
+      // Add USA area
+      area.y1(d => yPositionScale(d.ASFR_us))
+      svg
+        .append('path')
+        .datum(d.values)
+        .attr('d', area)
+        .attr('fill', '#86fcfd')
+        .lower()
+
+      // Add Year label
       svg
         .append('text')
         .text(d.key)
@@ -70,6 +82,37 @@ function ready(datapoints) {
         .attr('text-anchor', 'middle')
         .attr('dy', -10)
 
+      // add total fertility rates by year
+      var datapoints = d.values
+      var ASFR_jpList = datapoints.map(d => +d.ASFR_jp)
+      var ASFR_usList = datapoints.map(d => +d.ASFR_us)
+      // console.log(d3.sum(ASFR_jpList).toFixed(2))
+
+      // Japan Fertility rates
+      svg
+        .append('text')
+        .datum(datapoints)
+        .text(d3.sum(ASFR_jpList).toFixed(2))
+        .attr('x', width)
+        .attr('y', yPositionScale(0.2))
+        .attr('font-size', 10)
+        .attr('fill', '#eb3223')
+        .attr('text-anchor', 'end')
+        .attr('alignment-baseline', 'hanging')
+
+      // US Fertility rates
+      svg
+        .append('text')
+        .datum(datapoints)
+        .text(d3.sum(ASFR_usList).toFixed(2))
+        .attr('x', width)
+        .attr('y', yPositionScale(0.2))
+        .attr('font-size', 10)
+        .attr('fill', '#86fcfd')
+        .attr('text-anchor', 'end')
+        .attr('alignment-baseline', 'ideographic')
+
+      // add x and y axis on each.
       var xAxis = d3.axisBottom(xPositionScale).tickValues([15, 30, 45])
       svg
         .append('g')
