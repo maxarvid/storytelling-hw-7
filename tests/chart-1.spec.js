@@ -9,10 +9,6 @@ document.body.innerHTML = fs.readFileSync('src/index.html')
 /* Run the code for our chart */
 const chart = require('../src/chart-1')
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index
-}
-
 /* 
   Unit tests
 */
@@ -119,12 +115,12 @@ describe('The group element', () => {
 
 describe('The lines', () => {
   test('There should be one for each region', () => {
-    let lines = d3.selectAll('#chart-1 > svg > g > path')
+    let lines = d3.selectAll('#chart-1 > svg g.price-data > path')
     expect(lines.size()).toEqual(10)
   })
 
   test('They should each have different colors', () => {
-    let lines = d3.selectAll('#chart-1 > svg > g > path')
+    let lines = d3.selectAll('#chart-1 > svg g.price-data > path')
     let uniqueColors = []
     lines.each(function() {
       let color = d3.select(this).attr('stroke')
@@ -139,7 +135,7 @@ describe('The lines', () => {
 
 describe('The points', () => {
   test('should be one for each region', () => {
-    let points = d3.selectAll('#chart-1 > svg > g > circle')
+    let points = d3.selectAll('#chart-1 > svg g.price-data > circle')
     expect(points.size()).toEqual(10)
   })
 
@@ -152,13 +148,15 @@ describe('The points', () => {
       .selectAll('#chart-1 > svg > g > path')
       .nodes()
       .map(e => e.getAttribute('stroke'))
+    pointColors.sort()
+    lineColors.sort()
     expect(pointColors).toEqual(lineColors)
   })
 
-  test('are on the right-hand side of the page', () => {
+  test('are on the right-hand side of the chart', () => {
     d3.selectAll('#chart-1 > svg > g > circle').each(function() {
       let circle = d3.select(this)
-      expect(+circle.attr('cx')).toBeGreaterThan(chart.width * 0.75)
+      expect(+circle.attr('cx')).toEqual(chart.width)
     })
   })
 })
@@ -180,9 +178,37 @@ describe('The text', () => {
   })
 
   test('uses dx as an offset', () => {
-    let dy = +d3.select('#chart-1 > svg > g > text').attr('dy')
-    expect(dy).not.toBeUndefined()
-    expect(dy).not.toBeNull()
-    expect(dy).toBeGreaterThan(0)
+    let dx = +d3.selectAll('#chart-1 > svg g.price-data > text').attr('dx')
+    expect(dx).not.toBeUndefined()
+    expect(dx).not.toBeNull()
+    expect(dx).toBeGreaterThan(0)
+  })
+})
+
+describe('The y axis', () => {
+  test('Exists and has the class y-axis', () => {
+    let group = d3.select('#chart-1 .y-axis')
+    expect(group).not.toBeNull()
+  })
+
+  test('has more than 5 but fewer than 10 tick marks', () => {
+    let texts = d3.selectAll('#chart-1 .y-axis text')
+    expect(texts.size()).toBeGreaterThan(5)
+    expect(texts.size()).toBeLessThan(10)
+  })
+})
+
+describe('The x axis', () => {
+  test('Exists and has the class x-axis', () => {
+    let group = d3.select('#chart-1 .x-axis')
+    expect(group).not.toBeNull()
+  })
+
+  test('is formatted as the abbreviated month name and the 2-digit year', () => {
+    let texts = d3.selectAll('#chart-1 .x-axis text')
+    texts.each(function(d) {
+      let element = d3.select(this)
+      expect(element.text()).toMatch(/\w\w\w \d\d/)
+    })
   })
 })

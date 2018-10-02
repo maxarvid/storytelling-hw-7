@@ -1,10 +1,10 @@
 import * as d3 from 'd3'
 
 // Set up margin/height/width
-var margin = { top: 50, left: 50, right: 100, bottom: 30 }
+var margin = { top: 50, left: 50, right: 120, bottom: 30 }
 
 var height = 700 - margin.top - margin.bottom
-var width = 600 - margin.left - margin.right
+var width = 620 - margin.left - margin.right
 // Add your svg
 var svg = d3
   .select('#chart-1')
@@ -79,43 +79,33 @@ function ready(datapoints) {
     .attr('class', 'price-data')
     .each(function(d) {
       var g = d3.select(this)
-
       var datapoints = d.values
 
       // Draw your lines
-      g.selectAll('.price-line')
-        .data(datapoints)
-        .enter()
-        .append('path')
-        .attr('class', 'price-line')
+      g.append('path')
+        .datum(datapoints)
         .attr('d', d => line(datapoints))
         .attr('fill', 'none')
-        .attr('stroke', d => colorScale(d.region))
+        .attr('stroke', colorScale(datapoints[0].region))
         .attr('stroke-width', 2)
 
       // Add the circles
       let maxDate = d3.max(datapoints, d => d.datetime)
       let finalPrice = datapoints[0].price
 
-      g.selectAll('.line-circle')
-        .data(datapoints)
-        .enter()
-        .append('circle')
-        .attr('class', 'line-circle')
+      g.append('circle')
+        .datum(datapoints)
         .attr('cx', xPositionScale(maxDate))
-        .attr('cy', d => yPositionScale(finalPrice))
+        .attr('cy', yPositionScale(finalPrice))
         .attr('r', 5)
-        .attr('fill', d => colorScale(d.region))
+        .attr('fill', colorScale(datapoints[0].region))
 
       // Add your text on the right-hand side
-      g.selectAll('.region-text')
-        .data(datapoints)
-        .enter()
-        .append('text')
-        .attr('class', 'region-text')
-        .text(d => d.region)
+      g.append('text')
+        .datum(datapoints)
+        .text(datapoints[0].region)
         .attr('x', xPositionScale(maxDate))
-        .attr('y', d => yPositionScale(finalPrice))
+        .attr('y', yPositionScale(finalPrice))
         .attr('font-size', 12)
         .attr('alignment-baseline', 'middle')
         .attr('dx', 8)
