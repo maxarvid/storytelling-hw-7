@@ -157,3 +157,13 @@ function ready(datapoints) {
     .attr('class', 'axis y-axis')
     .call(yAxis)
 }
+
+export {
+  xPositionScale,
+  yPositionScale,
+  colorScale,
+  line,
+  width,
+  height,
+  parseTime
+}

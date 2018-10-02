@@ -127,3 +127,4 @@ function ready(datapoints) {
         .call(yAxis)
     })
 }
+export { xPositionScale, yPositionScale, width, height, area }

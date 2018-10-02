@@ -139,3 +139,4 @@ function ready(datapoints) {
       svg.select('.y-axis g').remove()
     })
 }
+export { xPositionScale, yPositionScale, width, height, line }

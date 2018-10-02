@@ -13,6 +13,13 @@ var container = d3.select('#chart-4')
 // Create your area generator
 
 // Read in your data, then call ready
+d3.csv(require('./climate-data.tsv')
+  .then(ready)
+  .catch(err => {
+    console.log(err)
+  })
 
 // Write your ready function
-
+function ready(datapoints) {
+  console.log('data is', datapoints)
+}
