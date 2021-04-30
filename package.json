@@ -30,14 +30,14 @@
     "prettier": "^1.16.4"
   },
   "dependencies": {
-    "acorn": "^6.1.1",
+    "acorn": "^6.4.2",
     "babel-preset-env": "^1.7.0",
     "d3": "^5.9.1",
-    "handlebars": "^4.5.3",
+    "handlebars": "^4.7.7",
     "jest": "^23.6.0",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "merge": "^1.2.1",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.6.1"
   }
 }
